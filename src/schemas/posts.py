@@ -13,6 +13,3 @@ class PostOut(PostBase):
     author: UserOut
     upvotes: int
     downvotes: int
-
-    class Config:
-        orm_mode = True
