@@ -1,47 +1,54 @@
-Welcome to the Yaballee BlogPost API 🎉
-Instructions to Run the API:
+# Yaballee BlogPost API
 
-    ✅ Make sure you have Python 3.12 or higher installed (we recommend 3.12 specifically).
+Welcome to the **Yaballee BlogPost API** – a simple blog platform with user registration, authentication, post creation, and voting functionality.
 
-    🛡️ (Optional but recommended) Create and activate a virtual environment:
+---
 
+## 🚀 How to Run the API
+
+### 1. Prerequisites
+
+- Python **3.12** or higher installed (this project uses 3.12)
+
+### 2. Setup
+
+#### (Optional) Create a virtual environment
+
+```bash
 python -m venv .venv
-source .venv/bin/activate # On Linux/macOS
-.venv\Scripts\activate # On Windows
-
-📦 Install dependencies:
-
+# Activate the virtual environment:
+# On Linux/macOS:
+source .venv/bin/activate
+# On Windows:
+.venv\Scripts\activate
+# Install Dependencies:
 pip install -r requirements.txt
+```
 
-🚀 Run the API:
+### 3. Start the API
 
+```bash
 python -m src.main
+```
 
-🌐 Open your browser and go to:
+- Once the server is running, open your browser and go to:
 
-    http://localhost:8080/docs
+```bash
+http://localhost:8080/docs
+```
 
-    to use the interactive Swagger UI for testing and exploring the API.
+This will open the Swagger UI for interactive API testing and documentation.
 
-🧪 Running Tests with Pytest
+---
 
-We use pytest for automated testing.
-To run all tests:
+## 🧪 Running Tests with Pytest
 
+This project uses [`pytest`](https://docs.pytest.org/) for testing.
+
+### ✅ To run all tests:
+
+```bash
 pytest
+```
 
-To run a specific test file:
-
-pytest tests/test_users.py
-
-To see detailed output:
-
-pytest -v
-
-To run tests and show print/log outputs:
-
-pytest -s
-
-    Make sure your test database is configured properly if you're mocking or using SQLite, and that the tables are created for test runs.
-
-Enjoy developing! 🙌 If you have any questions or bugs, feel free to improve this project further.
+- Let me know if you'd like to include examples of test output or how to use fixtures!
