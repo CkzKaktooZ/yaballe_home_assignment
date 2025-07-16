@@ -1,4 +1,3 @@
-# src/main.py
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from src.routes import UserRoutes, PostRoutes
@@ -49,6 +48,5 @@ def root():
     return {"message": "Welcome to the Blog API!"}
 
 if __name__ == "__main__":
-    # Now that all models are imported, we can safely initialize the DB
     Base.metadata.create_all(bind=engine)
     uvicorn.run("src.main:app", host="0.0.0.0", port=8080, reload=True)
