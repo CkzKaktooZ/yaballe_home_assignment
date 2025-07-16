@@ -12,7 +12,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.post("/register", response_model=UserSchemas.UserOut)
 def register(user: UserSchemas.UserCreateRequest, db: Session = Depends(get_db)):
-    user_with_username = UserServices.get_user_by_username(user.username)
+    user_with_username = UserServices.get_user_by_username(user.username, db)
     
     if user_with_username:
         raise HTTPException(status_code=400, detail="Username already taken.")
@@ -62,23 +62,16 @@ def search_users(q: str = Query(..., min_length=1), db: Session = Depends(get_db
 def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
 
 
-@router.delete("/{user_id}", response_model=UserSchemas.UserOut)
+@router.delete("/{user_id}")
 def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(AuthServices.get_current_user)):
-    user_to_delete = db.query(User).filter(User.id == user_id).first()
-
-    if not user_to_delete:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    if user_to_delete.id != current_user.id:
-        raise HTTPException(status_code=403, detail="You can only delete your own account.")
-
-    db.delete(user_to_delete)
-    db.commit()
-    return user_to_delete
+    if user_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
+    
+    UserServices.delete_user_by_id(user_id, db)
 
 
 

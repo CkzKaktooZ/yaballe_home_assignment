@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
@@ -10,6 +10,7 @@ from . import AuthServices
 
 def get_user_by_email(db: Session, email: str) -> User:
     return db.query(User).filter(User.email == email).first()
+
 
 def get_user_by_username(username: str, db: Session) -> User:
     return db.query(User).filter(User.username == username).first()
@@ -34,9 +35,14 @@ def query_users(q: str, db: Session = Depends(get_db)) -> list[User]:
     ).all()
 
 
-def delete_user_by_id(id: int, db: Session):
-    pass
-
+def delete_user_by_id(user_id: int, db: Session):
+    user = db.query(User).filter(User.id == user_id).first()
+    
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    db.delete(user)
+    db.commit()
 
 def create_user(user: UserSchemas.UserCreateRequest, db: Session):
     hashed_pw = AuthServices.hash_password(user.password)
