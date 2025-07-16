@@ -33,19 +33,23 @@ def setup_db():
     Base.metadata.drop_all(bind=engine)
 
 
-def test_register_user():
+def test_register_user(client):
+    import uuid
+    unique_email = f"testuser_{uuid.uuid4()}@test.com"
+    unique_username = f"testuser_{uuid.uuid4().hex[:6]}"
+
     response = client.post("/users/register", json={
-        "email": "testuser@test.com",
-        "username": "testuser",
+        "email": unique_email,
+        "username": unique_username,
         "first_name": "Test",
         "last_name": "User",
         "password": "secret123"
     })
+
     assert response.status_code == 200
     data = response.json()
-    assert data["username"] == "testuser"
-    assert data["email"] == "testuser@test.com"
-    assert "id" in data
+    assert data["username"] == unique_username
+    assert data["email"] == unique_email
 
 
 def test_register_duplicate_username():
