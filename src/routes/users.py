@@ -18,7 +18,7 @@ def register(user: UserSchemas.UserCreateRequest, db: Session = Depends(get_db))
     if user_with_username:
         raise HTTPException(status_code=400, detail="Username already taken.")
     
-    user_with_username = UserServices.get_user_by_email(user.email)
+    user_with_username = UserServices.get_user_by_email(user.email, db)
 
     if user_with_username:
         raise HTTPException(status_code=400, detail="Email already taken.")
