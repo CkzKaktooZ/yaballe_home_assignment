@@ -3,9 +3,11 @@ from sqlalchemy.orm import relationship
 from src.database import Base
 import enum
 
+
 class VoteType(str, enum.Enum):
     upvote = "upvote"
     downvote = "downvote"
+
 
 class Vote(Base):
     __tablename__ = "votes"

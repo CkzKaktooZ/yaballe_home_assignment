@@ -8,11 +8,12 @@ import uvicorn
 app = FastAPI(
     title="Yaballe blogposts",
     description="This is the API for the blogposts of Yaballee",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 app.include_router(UserRoutes)
 app.include_router(PostRoutes)
+
 
 def custom_openapi():
     if app.openapi_schema:
@@ -26,11 +27,7 @@ def custom_openapi():
     )
 
     openapi_schema["components"]["securitySchemes"] = {
-        "BearerAuth": {
-            "type": "http",
-            "scheme": "bearer",
-            "bearerFormat": "JWT"
-        }
+        "BearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
     }
 
     # Apply BearerAuth to all endpoints globally
@@ -41,11 +38,14 @@ def custom_openapi():
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
+
 app.openapi = custom_openapi
+
 
 @app.get("/")
 def root():
     return {"message": "Welcome to the Blog API!"}
+
 
 if __name__ == "__main__":
     Base.metadata.create_all(bind=engine)

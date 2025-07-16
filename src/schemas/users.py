@@ -2,12 +2,14 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, EmailStr, constr
 from datetime import datetime
 
+
 class UserCreateRequest(BaseModel):
     email: EmailStr
     first_name: str
     last_name: str
     username: str
     password: str
+
 
 class UserEditRequest(BaseModel):
     email: Optional[EmailStr] = None
@@ -26,7 +28,8 @@ class UserBrief(BaseModel):
     last_name: str
 
     model_config = ConfigDict(from_attributes=True)
-        
+
+
 class UserOut(BaseModel):
     id: int
     username: str
@@ -34,5 +37,3 @@ class UserOut(BaseModel):
     first_name: str
     last_name: str
     model_config = ConfigDict(from_attributes=True)
-
-

@@ -11,18 +11,19 @@ from src.services import UserServices, AuthServices, PostServices
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
+
 @router.post("/register", response_model=UserSchemas.UserOut)
 def register(user: UserSchemas.UserCreateRequest, db: Session = Depends(get_db)):
     user_with_username = UserServices.get_user_by_username(user.username, db)
-    
+
     if user_with_username:
         raise HTTPException(status_code=400, detail="Username already taken.")
-    
+
     user_with_username = UserServices.get_user_by_email(user.email, db)
 
     if user_with_username:
         raise HTTPException(status_code=400, detail="Email already taken.")
-    
+
     new_user = UserServices.create_user(user, db)
     return new_user
 
@@ -31,7 +32,9 @@ def register(user: UserSchemas.UserCreateRequest, db: Session = Depends(get_db))
 def login(request: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == request.username).first()
 
-    if not user or not AuthServices.verify_password(request.password, user.hashed_password):
+    if not user or not AuthServices.verify_password(
+        request.password, user.hashed_password
+    ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid username or password",
@@ -59,31 +62,42 @@ def search_users(q: str = Query(..., min_length=1), db: Session = Depends(get_db
     users = UserServices.query_users(q, db)
     return users
 
+
 @router.get("/{user_id}", response_model=UserSchemas.UserOut)
 def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
     return user
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(AuthServices.get_current_user)):
+def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(AuthServices.get_current_user),
+):
     if user_id != current_user.id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
-    
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized"
+        )
+
     UserServices.delete_user_by_id(user_id, db)
 
+
 @router.put("/me", response_model=UserSchemas.UserOut)
-def edit_user(new_user_data: UserSchemas.UserEditRequest, db: Session = Depends(get_db), current_user: User = Depends(AuthServices.get_current_user)):
+def edit_user(
+    new_user_data: UserSchemas.UserEditRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(AuthServices.get_current_user),
+):
     return UserServices.update_user_info(new_user_data, current_user.id, db)
 
+
 @router.get("/{user_id}/posts", response_model=List[PostSchemas.PostOut])
-def get_my_posts(user_id: int, q: Optional[str] = Query(None), db: Session = Depends(get_db)):
+def get_my_posts(
+    user_id: int, q: Optional[str] = Query(None), db: Session = Depends(get_db)
+):
     return PostServices.query_user_posts(user_id, db, query=q)
-
-
-
-
-
-

@@ -2,12 +2,15 @@ from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from .users import UserBrief
 
+
 class PostBase(BaseModel):
     title: str
     content: str
 
+
 class PostCreate(PostBase):
     pass
+
 
 class PostOut(PostBase):
     id: int
