@@ -1,12 +1,13 @@
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
-from src.schemas import UserSchemas
+from src.schemas import UserSchemas, PostSchemas
 from src.models import User
 from src.database import get_db
 from src.schemas.auth import LoginRequest, TokenResponse
-from src.services import UserServices, AuthServices
+from src.services import UserServices, AuthServices, PostServices
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -72,6 +73,15 @@ def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User 
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
     
     UserServices.delete_user_by_id(user_id, db)
+
+@router.put("/me", response_model=UserSchemas.UserOut)
+def edit_user(new_user_data: UserSchemas.UserEditRequest, db: Session = Depends(get_db), current_user: User = Depends(AuthServices.get_current_user)):
+    return UserServices.update_user_info(new_user_data, current_user.id, db)
+
+@router.get("/{user_id}/posts", response_model=List[PostSchemas.PostOut])
+def get_my_posts(user_id: int, q: Optional[str] = Query(None), db: Session = Depends(get_db)):
+    return PostServices.query_user_posts(user_id, db, query=q)
+
 
 
 

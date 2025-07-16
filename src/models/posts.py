@@ -15,3 +15,11 @@ class Post(Base):
 
     author = relationship("User", back_populates="posts")
     votes = relationship("Vote", back_populates="post", cascade="all, delete")
+
+    @property
+    def upvotes(self):
+        return len([v for v in self.votes if v.vote_type == "upvote"])
+
+    @property
+    def downvotes(self):
+        return len([v for v in self.votes if v.vote_type == "downvote"])

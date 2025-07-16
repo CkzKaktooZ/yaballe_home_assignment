@@ -20,11 +20,11 @@ def get_user_by_id(id: int, db: Session) -> User:
     return db.query(User).filter(User.id == id).first()
 
 
-def get_all_users(db: Session = Depends(get_db)) -> list[User]:
+def get_all_users(db: Session) -> list[User]:
     return db.query(User).all()
 
 
-def query_users(q: str, db: Session = Depends(get_db)) -> list[User]:
+def query_users(q: str, db: Session) -> list[User]:
     return db.query(User).filter(
         or_(
             User.username.ilike(f"%{q}%"),
@@ -57,3 +57,28 @@ def create_user(user: UserSchemas.UserCreateRequest, db: Session):
     db.commit()
     db.refresh(new_user)
     return new_user
+
+def update_user_info(user_new_data: UserSchemas.UserEditRequest, user_id: int, db: Session):
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    if user_new_data.username is not None:
+        user.username = user_new_data.username
+
+    if user_new_data.email is not None:
+        user.email = user_new_data.email
+
+    if user_new_data.first_name is not None:
+        user.first_name = user_new_data.first_name
+
+    if user_new_data.last_name is not None:
+        user.last_name = user_new_data.last_name
+
+    if user_new_data.password is not None:
+        user.hashed_password = AuthServices.hash_password(user_new_data.password)
+
+    db.commit()
+    db.refresh(user)
+    return user

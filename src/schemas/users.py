@@ -1,4 +1,5 @@
-from pydantic import BaseModel, EmailStr
+from typing import Optional
+from pydantic import BaseModel, EmailStr, constr
 from datetime import datetime
 
 class UserCreateRequest(BaseModel):
@@ -9,11 +10,15 @@ class UserCreateRequest(BaseModel):
     password: str
 
 class UserEditRequest(BaseModel):
-    email: EmailStr | None = None
-    first_name: str | None = None
-    last_name: str | None = None
-    username: str | None = None
-    password: str | None = None
+    email: Optional[EmailStr] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    username: Optional[str] = None
+    password: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
 
 class UserBrief(BaseModel):
     id: int
