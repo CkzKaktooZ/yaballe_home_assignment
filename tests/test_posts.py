@@ -166,7 +166,8 @@ def test_vote_on_post(client, auth_token, another_auth_token):
 
     # upvote post as another user
     response = client.post(
-        f"/posts/{post_id}/vote?vote=upvote",
+        f"/posts/{post_id}/vote",
+        json={"vote": "upvote"},
         headers={"Authorization": f"Bearer {another_auth_token}"}
     )
     assert response.status_code == 200
@@ -175,7 +176,8 @@ def test_vote_on_post(client, auth_token, another_auth_token):
 
     # downvote post as original user
     response = client.post(
-        f"/posts/{post_id}/vote?vote=downvote",
+        f"/posts/{post_id}/vote",
+        json={"vote": "downvote"},
         headers={"Authorization": f"Bearer {auth_token}"}
     )
     assert response.status_code == 200

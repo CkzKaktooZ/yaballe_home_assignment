@@ -50,5 +50,5 @@ def get_post_votes(post_id: int, db: Session = Depends(get_db)):
     return PostServices.get_vote_counts_for_post(post_id, db)
 
 @router.post("/{post_id}/vote", response_model=PostSchemas.PostOut)
-def vote_on_post(post_id: int, vote: VoteSchemas.VoteTypeEnum, current_user: User = Depends(AuthServices.get_current_user), db: Session = Depends(get_db)):
-    return PostServices.vote_on_post_service(post_id, vote, current_user, db)
+def vote_on_post(post_id: int, vote: VoteSchemas.VoteRequest, current_user: User = Depends(AuthServices.get_current_user), db: Session = Depends(get_db)):
+    return PostServices.vote_on_post_service(post_id, vote.vote, current_user, db)
