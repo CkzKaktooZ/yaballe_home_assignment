@@ -1,0 +1,53 @@
+from fastapi import Depends
+from sqlalchemy import or_
+from sqlalchemy.orm import Session
+
+from src.database import get_db
+from src.models import User
+from src.schemas import UserSchemas
+from . import AuthServices
+
+
+def get_user_by_email(db: Session, email: str) -> User:
+    return db.query(User).filter(User.email == email).first()
+
+def get_user_by_username(username: str, db: Session) -> User:
+    return db.query(User).filter(User.username == username).first()
+
+
+def get_user_by_id(id: int, db: Session) -> User:
+    return db.query(User).filter(User.id == id).first()
+
+
+def get_all_users(db: Session = Depends(get_db)) -> list[User]:
+    return db.query(User).all()
+
+
+def query_users(q: str, db: Session = Depends(get_db)) -> list[User]:
+    return db.query(User).filter(
+        or_(
+            User.username.ilike(f"%{q}%"),
+            User.email.ilike(f"%{q}%"),
+            User.first_name.ilike(f"%{q}%"),
+            User.last_name.ilike(f"%{q}%")
+        )
+    ).all()
+
+
+def delete_user_by_id(id: int, db: Session):
+    pass
+
+
+def create_user(user: UserSchemas.UserCreateRequest, db: Session):
+    hashed_pw = AuthServices.hash_password(user.password)
+    new_user = User(
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        username=user.username, 
+        hashed_password=hashed_pw
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user

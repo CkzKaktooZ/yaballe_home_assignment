@@ -1,3 +1,3 @@
-from .posts import PostOut
-from .users import UserCreateRequest, UserOut
-from .votes import VoteBase, VoteCount
+from . import posts as PostSchemas 
+from . import users as UserSchemas
+from . import votes as VoteSchemas

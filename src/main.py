@@ -1,12 +1,10 @@
 # src/main.py
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
-from src.routes import users_router, posts_router
+from src.routes import UserRoutes, PostRoutes
 from src.database import engine, Base
 import uvicorn
 
-# ⬅ Import all models so they are registered with SQLAlchemy
-import src.models
 
 app = FastAPI(
     title="Yaballe blogposts",
@@ -14,8 +12,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
-app.include_router(users_router)
-app.include_router(posts_router)
+app.include_router(UserRoutes)
+app.include_router(PostRoutes)
 
 def custom_openapi():
     if app.openapi_schema:
