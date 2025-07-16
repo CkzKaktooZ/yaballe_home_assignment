@@ -52,3 +52,17 @@ pytest
 ```
 
 - Let me know if you'd like to include examples of test output or how to use fixtures!
+
+## 🐳 Running Docker
+
+- Build Docker image
+
+```bash
+docker build -t yaballe-app .
+```
+
+- Run Container
+
+```bash
+docker run -p 8080:8080 --name yaballe-container yaballe-app
+```
