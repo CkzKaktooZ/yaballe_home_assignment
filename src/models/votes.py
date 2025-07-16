@@ -1,4 +1,3 @@
-# src/models/vote.py
 from sqlalchemy import Column, Integer, ForeignKey, Enum, UniqueConstraint
 from sqlalchemy.orm import relationship
 from src.database import Base
