@@ -40,7 +40,7 @@ def edit_post_by_id(post_id: int, post_data: PostSchemas.PostBase, current_user:
     return PostServices.edit_post_by_id(post_id, post_data, current_user.id, db)
 
 
-@router.delete("/{post_id}")    
+@router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)    
 def delete_post(post_id: int, current_user: User = Depends(AuthServices.get_current_user), db: Session = Depends(get_db)):
     PostServices.delete_post_by_id(post_id, current_user, db)
 
