@@ -1,15 +1,20 @@
 from pydantic import BaseModel
 from datetime import datetime
-from .users import UserOut
+from .users import UserBrief
 
 class PostBase(BaseModel):
     title: str
     content: str
 
+class PostCreate(PostBase):
+    pass
 
 class PostOut(PostBase):
     id: int
     created_at: datetime
-    author: UserOut
-    upvotes: int
-    downvotes: int
+    author: UserBrief
+    upvotes: int = 0
+    downvotes: int = 0
+
+    class Config:
+        from_attributes = True

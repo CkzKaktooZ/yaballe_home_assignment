@@ -12,10 +12,6 @@ class VoteBase(BaseModel):
     vote_type: VoteTypeEnum
 
 
-class VoteResponse(BaseModel):
-    message: str
-
-
 class VoteCount(BaseModel):
     upvotes: int
     downvotes: int
